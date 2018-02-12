@@ -65,6 +65,20 @@ func (t *Tlsh) String() string {
 	return hex.EncodeToString(t.Binary())
 }
 
+func (t *Tlsh) FullString() string {
+	return hex.EncodeToString(append([]byte{swapByte(t.checksum), swapByte(t.lValue), t.qRatio, t.q1Ratio, t.q2Ratio}, t.code[:]...))
+}
+
+func ParseFullString(hash string) (*Tlsh, error) {
+	var code [32]byte
+	dec, err := hex.DecodeString(hash)
+	if err != nil {
+		return nil, err
+	}
+	copy(code[:], dec[5:])
+	return New(swapByte(dec[0]), swapByte(dec[1]), dec[3], dec[4], dec[2], code), nil
+}
+
 func quartilePoints(buckets [numBuckets]uint) (q1, q2, q3 uint) {
 	var spl, spr uint
 	p1 := uint(effBuckets/4 - 1)

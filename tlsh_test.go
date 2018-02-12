@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -41,6 +42,12 @@ var (
 		{"tests/test_file_1", "tests/test_file_empty", -1},
 		{"tests/test_file_empty", "tests/test_file_1", -1},
 	}
+
+	parseTestCases = []string{
+		`the quick brown fox`,
+		`When drag-dropping files from desktop break up files as change of subject occcurs, thus we need to look ahead and try and see if the topic has changed and what is the main subject - probably appending to existing files with similar subject.`,
+		`q231423412341341234`,
+	}
 )
 
 func TestHash(t *testing.T) {
@@ -76,6 +83,18 @@ func TestDiff(t *testing.T) {
 			}
 			t.Errorf("\nfilename: %s and %s have wrong distance %d vs. %d\n", tc.filenameA, tc.filenameB, tc.diff, diff)
 		}
+	}
+}
+
+func TestParseString(t *testing.T) {
+	for _, v := range parseTestCases {
+		ah, err := HashBytes([]byte(v))
+		assert.Nil(t, err)
+		ah2, err := ParseFullString(ah.FullString())
+		assert.Nil(t, err)
+		assert.EqualValues(t, ah2.Binary(), ah.Binary())
+		assert.EqualValues(t, ah, ah2)
+		assert.Equal(t, 0, ah.Diff(ah2))
 	}
 }
 
