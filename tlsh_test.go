@@ -90,7 +90,7 @@ func TestParseString(t *testing.T) {
 	for _, v := range parseTestCases {
 		ah, err := HashBytes([]byte(v))
 		assert.Nil(t, err)
-		ah2, err := ParseFullString(ah.FullString())
+		ah2, err := Parse(ah.FullString())
 		assert.Nil(t, err)
 		assert.EqualValues(t, ah2.Binary(), ah.Binary())
 		assert.EqualValues(t, ah, ah2)

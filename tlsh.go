@@ -62,14 +62,10 @@ func (t *Tlsh) Binary() []byte {
 
 // String returns the string representation of the hash`
 func (t *Tlsh) String() string {
-	return hex.EncodeToString(t.Binary())
-}
-
-func (t *Tlsh) FullString() string {
 	return hex.EncodeToString(append([]byte{swapByte(t.checksum), swapByte(t.lValue), t.qRatio, t.q1Ratio, t.q2Ratio}, t.code[:]...))
 }
 
-func ParseFullString(hash string) (*Tlsh, error) {
+func Parse(hash string) (*Tlsh, error) {
 	var code [32]byte
 	dec, err := hex.DecodeString(hash)
 	if err != nil {
